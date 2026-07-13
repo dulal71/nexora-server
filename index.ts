@@ -29,6 +29,23 @@ async function connectDB(): Promise<void> {
   }
 }
 
+//get product by id 
+app.get('/api/product/:id',async (req: Request, res: Response)=>{
+  try{
+    const productId =req.params.id as string
+    const query = {
+      _id:new ObjectId(productId)
+    }
+    const result = await products.findOne(query)
+     res.status(201).send(result);
+  }catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to create product',
+    });
+  }
+})
+
 // Add New Product
 app.post('/api/products', async (req: Request, res: Response) => {
   try {
@@ -95,6 +112,36 @@ const result = await products.deleteOne(query)
     });
   }
 })
+
+// Edit Product
+app.patch('/api/product/:id',async(req:Request,res:Response)=>{
+  try{
+    const productId = req.params.id as string ;
+    const data = req.body 
+    console.log(data);
+    const updateData = {
+      $set:data
+    }
+    const query = {
+      _id: new ObjectId(productId)
+    }
+const result = await products.updateOne(query,updateData)
+ res.status(200).json({
+      success: true,
+      data: result,
+    });
+
+  }catch(error){
+     res.status(500).json({
+      success: false,
+      message: "Failed to delete products",
+    });
+  }
+})
+
+
+
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
