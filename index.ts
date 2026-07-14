@@ -70,10 +70,12 @@ app.get('/api/products', async (req: Request, res: Response) => {
   try {
     const search = req.query.search as string
     const sort = req.query.sort as string
+    console.log('sort',sort);
     const category = req.query.category as string
     
     let query:any = {}
     let sortOption={}
+   
     if(search){
       query.name ={
          $regex: search,
@@ -91,6 +93,13 @@ app.get('/api/products', async (req: Request, res: Response) => {
     }
     if (sort === "newest") {
   sortOption = { createdAt: -1 };
+}
+
+if(category){
+  query.category={
+         $regex:category,
+        $options: "i"
+      }
 }
     const page = Number(req.query.page)  || 1
     const perPage = 12;
