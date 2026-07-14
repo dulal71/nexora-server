@@ -29,7 +29,7 @@ async function connectDB(): Promise<void> {
   }
 }
 
-//get product by id 
+//Get product By Id 
 app.get('/api/product/:id',async (req: Request, res: Response)=>{
   try{
     const productId =req.params.id as string
@@ -73,7 +73,9 @@ app.get('/api/products', async (req: Request, res: Response) => {
    const category = req.query.category as string
    
     let query:any = {}
-    let sortOption={createdAt: -1}
+    let sortOption: Record<string, 1 | -1> = {
+  createdAt: -1
+};
    
     if(search){
       query.name ={
