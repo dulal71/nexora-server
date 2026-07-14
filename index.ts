@@ -69,12 +69,11 @@ app.post('/api/products', async (req: Request, res: Response) => {
 app.get('/api/products', async (req: Request, res: Response) => {
   try {
     const search = req.query.search as string
-    const sort = req.query.sort as string
-    console.log('sort',sort);
-    const category = req.query.category as string
-    
+    const sort = req.query.sort as string 
+   const category = req.query.category as string
+   
     let query:any = {}
-    let sortOption={}
+    let sortOption={createdAt: -1}
    
     if(search){
       query.name ={
@@ -88,10 +87,11 @@ app.get('/api/products', async (req: Request, res: Response) => {
     if(sort === 'price-high'){
       sortOption={price : -1}
     }
-    if(sort === 'newest'){
-      sortOption={price : -1}
-    }
-    if (sort === "newest") {
+    
+if (sort === "newest") {
+  sortOption = { createdAt: -1 };
+}
+if (sort === "popular") {
   sortOption = { createdAt: -1 };
 }
 
