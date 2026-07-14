@@ -68,16 +68,42 @@ app.post('/api/products', async (req: Request, res: Response) => {
 // Get Product
 app.get('/api/products', async (req: Request, res: Response) => {
   try {
-
-    const cursor = products
-      .find({})
-      .sort({ createdAt: -1 });
-
+    const search = req.query.search as string
+    const sort = req.query.sort as string
+    const category = req.query.category as string
+    
+    let query:any = {}
+    let sortOption={}
+    if(search){
+      query.name ={
+         $regex: search,
+        $options: "i"
+      }
+    }
+     if(sort === 'price-low'){
+      sortOption={price : 1}
+    }
+    if(sort === 'price-high'){
+      sortOption={price : -1}
+    }
+    if(sort === 'newest'){
+      sortOption={price : -1}
+    }
+    if (sort === "newest") {
+  sortOption = { createdAt: -1 };
+}
+    const page = Number(req.query.page)  || 1
+    const perPage = 12;
+    const skip = (page-1)*perPage
+    const totalProduct=await products.countDocuments()
+    const cursor = products.find(query).sort(sortOption).skip(skip).limit(perPage)
+    
     const result = await cursor.toArray();
 
     res.status(200).json({
       success: true,
       data: result,
+      total:totalProduct
     });
 
   } catch (error) {
@@ -118,6 +144,7 @@ app.patch('/api/product/:id',async(req:Request,res:Response)=>{
   try{
     const productId = req.params.id as string ;
     const data = req.body 
+    console.log(data,'data');
     console.log(data);
     const updateData = {
       $set:data
