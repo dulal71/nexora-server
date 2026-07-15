@@ -149,7 +149,7 @@ if(category){
   }
 });
 //Get product By Id 
-app.get('/api/product/:id',verifyToken, async (req: Request, res: Response)=>{
+app.get('/api/product/:id', async (req: Request, res: Response)=>{
   try{
     const productId =req.params.id as string
     const query = {
